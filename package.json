@@ -7,17 +7,20 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --import tsx --test lib/features/payment/paymentSlice.test.ts"
+    "test": "node --import tsx --test src/features/stripe-elements-form/model/elementsSlice.test.ts"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
     "@stripe/react-stripe-js": "^6.2.0",
     "@stripe/stripe-js": "^9.2.0",
+    "clsx": "^2.1.1",
     "next": "15.5.15",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-redux": "^9.2.0",
-    "stripe": "^22.0.2"
+    "server-only": "^0.0.1",
+    "stripe": "^22.0.2",
+    "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
