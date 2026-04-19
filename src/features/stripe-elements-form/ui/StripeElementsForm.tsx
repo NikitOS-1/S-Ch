@@ -43,9 +43,11 @@ function StripePaymentFields() {
   const stripe = useStripe();
   const elements = useElements();
   const dispatch = useAppDispatch();
-  const elementsOutcome = useAppSelector((state) => state.elements.elementsOutcome);
+  const elementsOutcome = useAppSelector(
+    (state) => state.elements.elementsOutcome,
+  );
   const elementsErrorMessage = useAppSelector(
-    (state) => state.elements.elementsErrorMessage
+    (state) => state.elements.elementsErrorMessage,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -70,16 +72,26 @@ function StripePaymentFields() {
           redirect: "if_required",
         });
         if (confirmResult.error) {
-          dispatch(setElementsFailure(mapStripeConfirmErrorToMessage(confirmResult.error)));
+          dispatch(
+            setElementsFailure(
+              mapStripeConfirmErrorToMessage(confirmResult.error),
+            ),
+          );
           return;
         }
         const paymentIntent = confirmResult.paymentIntent;
         if (paymentIntent?.status === "succeeded") {
-          dispatch(setElementsSuccess(buildElementsPaymentReceipt(paymentIntent)));
+          dispatch(
+            setElementsSuccess(buildElementsPaymentReceipt(paymentIntent)),
+          );
           return;
         }
         if (paymentIntent) {
-          dispatch(setElementsFailure(paymentIntentStatusMessage(paymentIntent.status)));
+          dispatch(
+            setElementsFailure(
+              paymentIntentStatusMessage(paymentIntent.status),
+            ),
+          );
           return;
         }
         dispatch(setElementsFailure("Unexpected payment result."));
@@ -87,7 +99,7 @@ function StripePaymentFields() {
         setIsSubmitting(false);
       }
     },
-    [dispatch, elements, stripe]
+    [dispatch, elements, stripe],
   );
 
   return (
@@ -117,19 +129,23 @@ function StripePaymentFields() {
 
 export function StripeElementsForm() {
   const dispatch = useAppDispatch();
-  const [createPaymentIntent, { data, isLoading, isError, error, isUninitialized }] =
-    useCreatePaymentIntentMutation();
+  const [
+    createPaymentIntent,
+    { data, isLoading, isError, error, isUninitialized },
+  ] = useCreatePaymentIntentMutation();
   const [bootstrapDone, setBootstrapDone] = useState(false);
   const [handledThreeDsReturn, setHandledThreeDsReturn] = useState(false);
-  const elementsOutcome = useAppSelector((state) => state.elements.elementsOutcome);
+  const elementsOutcome = useAppSelector(
+    (state) => state.elements.elementsOutcome,
+  );
   const elementsErrorMessage = useAppSelector(
-    (state) => state.elements.elementsErrorMessage
+    (state) => state.elements.elementsErrorMessage,
   );
 
   useEffect(() => {
     let cancelled = false;
 
-    const run = async () => {
+    const run = async (): Promise<void> => {
       if (typeof window === "undefined" || !stripePromise) {
         setBootstrapDone(true);
         return;
@@ -152,19 +168,34 @@ export function StripeElementsForm() {
           return;
         }
         if (retrieveError) {
-          dispatch(setElementsFailure(mapStripeConfirmErrorToMessage(retrieveError)));
-        } else if (redirectStatus === "succeeded" && paymentIntent?.status === "succeeded") {
-          dispatch(setElementsSuccess(buildElementsPaymentReceipt(paymentIntent)));
+          dispatch(
+            setElementsFailure(mapStripeConfirmErrorToMessage(retrieveError)),
+          );
+        } else if (
+          redirectStatus === "succeeded" &&
+          paymentIntent?.status === "succeeded"
+        ) {
+          dispatch(
+            setElementsSuccess(buildElementsPaymentReceipt(paymentIntent)),
+          );
         } else if (redirectStatus === "failed") {
           dispatch(
             setElementsFailure(
-              "3D Secure failed or was canceled. Try again with card 4000…3184."
-            )
+              "3D Secure failed or was canceled. Try again with card 4000…3184.",
+            ),
           );
         } else if (paymentIntent) {
-          dispatch(setElementsFailure(paymentIntentStatusMessage(paymentIntent.status)));
+          dispatch(
+            setElementsFailure(
+              paymentIntentStatusMessage(paymentIntent.status),
+            ),
+          );
         } else {
-          dispatch(setElementsFailure("Could not verify payment after authentication."));
+          dispatch(
+            setElementsFailure(
+              "Could not verify payment after authentication.",
+            ),
+          );
         }
 
         const clean = new URL(window.location.href);
@@ -189,7 +220,7 @@ export function StripeElementsForm() {
       }
     };
 
-    void run();
+    void run(); // or // run().catch(() => {})
     return () => {
       cancelled = true;
     };
@@ -211,46 +242,51 @@ export function StripeElementsForm() {
     return (
       <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
         Missing{" "}
-        <code className="rounded bg-red-100 px-1">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code>.
+        <code className="rounded bg-red-100 px-1">
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+        </code>
+        .
       </div>
     );
   }
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        {isPreparing ? (
-          <p className="text-sm font-medium text-slate-600">Preparing secure form…</p>
-        ) : null}
-        {intentErrorMessage ? (
-          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
-            {intentErrorMessage}
-          </p>
-        ) : null}
-        {showElementsForm && clientSecret ? (
-          <ElementsProvider stripe={stripePromise} clientSecret={clientSecret}>
-            <StripePaymentFields />
-          </ElementsProvider>
-        ) : null}
-        {showThreeDsOutcomeOnly ? (
-          <>
-            <ElementsSuccessReceipt />
-            {elementsOutcome === "failed" && elementsErrorMessage ? (
-              <p
-                className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
-                role="alert"
-              >
-                {elementsErrorMessage}
-              </p>
-            ) : null}
-          </>
-        ) : null}
-        {bootstrapDone &&
-        !clientSecret &&
-        !intentErrorMessage &&
-        !isPreparing &&
-        !handledThreeDsReturn ? (
-          <p className="text-sm text-red-600">Could not initialize payment.</p>
-        ) : null}
+      {isPreparing ? (
+        <p className="text-sm font-medium text-slate-600">
+          Preparing secure form…
+        </p>
+      ) : null}
+      {intentErrorMessage ? (
+        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+          {intentErrorMessage}
+        </p>
+      ) : null}
+      {showElementsForm && clientSecret ? (
+        <ElementsProvider stripe={stripePromise} clientSecret={clientSecret}>
+          <StripePaymentFields />
+        </ElementsProvider>
+      ) : null}
+      {showThreeDsOutcomeOnly ? (
+        <>
+          <ElementsSuccessReceipt />
+          {elementsOutcome === "failed" && elementsErrorMessage ? (
+            <p
+              className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800"
+              role="alert"
+            >
+              {elementsErrorMessage}
+            </p>
+          ) : null}
+        </>
+      ) : null}
+      {bootstrapDone &&
+      !clientSecret &&
+      !intentErrorMessage &&
+      !isPreparing &&
+      !handledThreeDsReturn ? (
+        <p className="text-sm text-red-600">Could not initialize payment.</p>
+      ) : null}
     </div>
   );
 }
