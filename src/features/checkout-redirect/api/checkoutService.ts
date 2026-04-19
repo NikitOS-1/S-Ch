@@ -15,7 +15,7 @@ export async function createCheckoutSession(): Promise<string> {
           product_data: {
             name: "Pro Plan",
           },
-          unit_amount: 2900,
+          unit_amount: 1900,
         },
         quantity: 1,
       },
