@@ -32,15 +32,147 @@ export function CheckoutPage() {
         <FlowDiagram
           accent="blue"
           steps={[
-            "Button click",
-            "POST /api/checkout",
-            "Stripe Session URL",
-            "Redirect to Stripe",
-            "Card input",
-            "Stripe processes",
-            "Redirect back",
-            "Server verifies session_id",
-            "Show status",
+            {
+              label: "Button click",
+              details: {
+                frontend: [
+                  "CheckoutButton collects mode, productName, amountDollars, and quantity from form state.",
+                  "UI converts dollars to cents before request payload is sent.",
+                ],
+                backend: [
+                  "No backend call happens before the click event.",
+                ],
+                keyItems: [
+                  "src/features/checkout-redirect/ui/CheckoutButton.tsx",
+                  "handleBuyNow()",
+                  "parseDollarInputToCents()",
+                ],
+              },
+            },
+            {
+              label: "POST /api/checkout",
+              details: {
+                frontend: [
+                  "RTK Query mutation useCreateCheckoutSessionMutation sends POST to checkout endpoint.",
+                ],
+                backend: [
+                  "route.ts validates mode, amountCents, quantity, and productName.",
+                  "Validated payload is passed into createCheckoutSession(params).",
+                ],
+                keyItems: [
+                  "src/features/checkout-redirect/api/checkoutApi.ts",
+                  "src/app/api/checkout/route.ts",
+                  "parseCreateCheckoutSessionRequest()",
+                ],
+              },
+            },
+            {
+              label: "Stripe Session URL",
+              details: {
+                frontend: [
+                  "Frontend waits for { url } response and does not build any Stripe URL itself.",
+                ],
+                backend: [
+                  "createCheckoutSession uses stripe.checkout.sessions.create with mode and line_items.",
+                  "success_url and cancel_url are generated from NEXT_PUBLIC_URL.",
+                ],
+                keyItems: [
+                  "src/features/checkout-redirect/api/checkoutService.ts",
+                  "createCheckoutSession()",
+                  "requireAppUrl()",
+                ],
+              },
+            },
+            {
+              label: "Redirect to Stripe",
+              details: {
+                frontend: [
+                  "window.location.assign(result.url) navigates browser to hosted checkout page.",
+                ],
+                backend: [
+                  "No additional app backend work after URL response.",
+                ],
+                keyItems: [
+                  "src/features/checkout-redirect/ui/CheckoutButton.tsx",
+                  "window.location.assign()",
+                ],
+              },
+            },
+            {
+              label: "Card input",
+              details: {
+                frontend: [
+                  "Card form is fully hosted by Stripe Checkout domain.",
+                ],
+                backend: [
+                  "No app backend access to raw card data.",
+                ],
+                keyItems: [
+                  "Stripe Checkout hosted page",
+                ],
+              },
+            },
+            {
+              label: "Stripe processes",
+              details: {
+                frontend: [
+                  "User remains on Stripe page during payment processing.",
+                ],
+                backend: [
+                  "Stripe handles authorization and payment lifecycle.",
+                ],
+                keyItems: [
+                  "stripe.checkout.sessions.create()",
+                ],
+              },
+            },
+            {
+              label: "Redirect back",
+              details: {
+                frontend: [
+                  "Stripe redirects browser to success_url with session_id query parameter.",
+                ],
+                backend: [
+                  "URL destination is controlled by server-side session configuration.",
+                ],
+                keyItems: [
+                  "success_url in createCheckoutSession()",
+                  "/success?session_id={CHECKOUT_SESSION_ID}",
+                ],
+              },
+            },
+            {
+              label: "Server verifies session_id",
+              details: {
+                frontend: [
+                  "Success page server component receives searchParams.session_id.",
+                ],
+                backend: [
+                  "retrieveCheckoutSessionDisplay calls stripe.checkout.sessions.retrieve(sessionId).",
+                  "Returned data is normalized for UI output.",
+                ],
+                keyItems: [
+                  "src/widgets/success-page/ui/SuccessPage.tsx",
+                  "src/features/checkout-redirect/api/checkoutSessionService.ts",
+                  "retrieveCheckoutSessionDisplay()",
+                ],
+              },
+            },
+            {
+              label: "Show status",
+              details: {
+                frontend: [
+                  "PaymentStatusCard renders customer email, amount, and payment status.",
+                ],
+                backend: [
+                  "Server-provided display model is rendered directly in UI.",
+                ],
+                keyItems: [
+                  "src/features/payment-status/ui/PaymentStatusCard.tsx",
+                  "CheckoutSessionDisplay",
+                ],
+              },
+            },
           ]}
         />
       </div>
