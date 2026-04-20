@@ -10,9 +10,10 @@ export const checkoutApi = baseApi.injectEndpoints({
       CreateCheckoutSessionResponse,
       CreateCheckoutSessionRequest
     >({
-      query: () => ({
+      query: (body) => ({
         url: "checkout",
         method: "POST",
+        body,
       }),
     }),
   }),

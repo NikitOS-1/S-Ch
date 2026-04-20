@@ -2,32 +2,35 @@ import "server-only";
 
 import { requireAppUrl } from "@/shared/config/env";
 import { getStripeServer } from "@/shared/lib/stripe-server";
+import type { CreateCheckoutSessionRequest } from "../model/types";
 
-export async function createCheckoutSession(): Promise<string> {
+export async function createCheckoutSession(
+  params: CreateCheckoutSessionRequest
+): Promise<string> {
+  const normalizedAmountCents = Math.max(50, Math.floor(params.amountCents));
+  const normalizedQuantity = Math.max(1, Math.floor(params.quantity));
   const baseUrl = requireAppUrl();
   const stripe = getStripeServer();
+  const isSubscription = params.mode === "subscription";
   const session = await stripe.checkout.sessions.create({
-    mode: "payment", // or "subscription"
+    mode: params.mode,
     line_items: [
       {
         price_data: {
           currency: "usd",
           product_data: {
-            name: "Pro Plan",
+            name: params.productName,
           },
-          unit_amount: 1900,
-          //  (----if you want to create a subscription, uncomment the following block----)
-          // recurring: {
-          //   interval: "month", // day, week, month, year
-          //   interval_count: 1, // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 (optional)
-          //   trial_period_days: 0, // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 (optional)
-          //   trial_period_unit: "day", // day, week, month, year (optional)
-          //   trial_period_interval_count: 0, // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 (optional)
-          //   trial_period_interval_unit: "day", // day, week, month, year (optional)
-          //   trial_period_interval_count: 0, // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 (optional)
-          // },
+          unit_amount: normalizedAmountCents,
+          ...(isSubscription
+            ? {
+                recurring: {
+                  interval: "month" as const,
+                },
+              }
+            : {}),
         },
-        quantity: 1,
+        quantity: normalizedQuantity,
       },
     ],
     success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,

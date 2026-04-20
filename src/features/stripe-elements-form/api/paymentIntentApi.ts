@@ -10,9 +10,10 @@ export const paymentIntentApi = baseApi.injectEndpoints({
       CreatePaymentIntentResponse,
       CreatePaymentIntentRequest
     >({
-      query: () => ({
+      query: (body) => ({
         url: "payment-intent",
         method: "POST",
+        body,
       }),
     }),
   }),
