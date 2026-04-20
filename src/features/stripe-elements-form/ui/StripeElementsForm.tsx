@@ -27,7 +27,7 @@ import { ElementsSuccessReceipt } from "./ElementsSuccessReceipt";
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
 const appUrl = process.env.NEXT_PUBLIC_URL ?? "";
 const stripePromise = getStripeBrowser(publishableKey);
-const defaultProductName = "Pro Plan+";
+const defaultProductName = "Pro Plan";
 const defaultAmountDollars = "29.00";
 const defaultQuantity = 1;
 
@@ -140,23 +140,25 @@ function StripePaymentFields({
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
         <PaymentElement />
       </div>
-      <button
-        type="submit"
-        disabled={!stripe || !elements || isSubmitting}
-        className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:w-auto"
-      >
-        {isSubmitting ? "Processing…" : `Pay ${totalDisplay}`}
-      </button>
-      <button
-        type="button"
-        disabled={isSubmitting || isRefreshing}
-        onClick={() => {
-          void onStartNewPayment();
-        }}
-        className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-2.5 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-      >
-        {isRefreshing ? "Preparing new payment…" : "Start new payment"}
-      </button>
+      <div className="flex flex-wrap gap-3">
+        <button
+          type="submit"
+          disabled={!stripe || !elements || isSubmitting}
+          className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:w-auto"
+        >
+          {isSubmitting ? "Processing…" : `Pay ${totalDisplay}`}
+        </button>
+        <button
+          type="button"
+          disabled={isSubmitting || isRefreshing}
+          onClick={() => {
+            void onStartNewPayment();
+          }}
+          className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        >
+          {isRefreshing ? "Preparing new payment…" : "Start new payment"}
+        </button>
+      </div>
       <ElementsSuccessReceipt />
       {elementsOutcome === "failed" && elementsErrorMessage ? (
         <p

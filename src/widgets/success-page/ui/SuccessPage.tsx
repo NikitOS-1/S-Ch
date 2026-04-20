@@ -169,6 +169,15 @@ export async function SuccessPage({ searchParams }: SuccessPageProps) {
                     "src/features/checkout-redirect/api/checkoutSessionService.ts",
                     "retrieveCheckoutSessionDisplay()",
                   ],
+                  codeExamples: [
+                    {
+                      title: "Stripe session retrieval",
+                      language: "ts",
+                      code: "const session = await stripe.checkout.sessions.retrieve(sessionId);\nconst email = session.customer_details?.email ?? \"-\";\nconst amountCents = session.amount_total ?? 0;",
+                      explanation:
+                        "Server retrieves authoritative payment result from Stripe before rendering status.",
+                    },
+                  ],
                 },
               },
               {

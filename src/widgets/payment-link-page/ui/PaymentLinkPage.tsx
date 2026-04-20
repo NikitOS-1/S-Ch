@@ -39,6 +39,15 @@ export function PaymentLinkPage() {
                   "src/features/payment-link-redirect/ui/PaymentLinkButton.tsx",
                   "env.stripePaymentLink",
                 ],
+                codeExamples: [
+                  {
+                    title: "Direct Payment Link button",
+                    language: "tsx",
+                    code: "<a\n  href={paymentLinkUrl}\n  target=\"_blank\"\n  rel=\"noopener noreferrer\"\n>\n  Buy Now\n</a>",
+                    explanation:
+                      "Payment Link flow is intentionally simple: no API request, direct redirect to Stripe.",
+                  },
+                ],
               },
             },
             {

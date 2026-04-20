@@ -4,6 +4,12 @@ interface FlowStepDetails {
   frontend: readonly string[];
   backend: readonly string[];
   keyItems: readonly string[];
+  codeExamples?: readonly {
+    title: string;
+    language: "ts" | "tsx" | "js" | "json" | "bash";
+    code: string;
+    explanation?: string;
+  }[];
 }
 
 interface FlowStepConfig {
@@ -32,7 +38,7 @@ export function FlowDiagram({ steps, accent }: FlowDiagramProps) {
         <div key={`${step.label}-${index}`} className="flex flex-col items-center gap-2">
           <StepCard label={step.label} variant={variant} />
           {step.details ? (
-            <details className={`w-full rounded-lg border p-3 text-sm text-slate-700 ${detailsBorderClass}`}>
+            <details className={`w-full rounded-lg border p-2.5 text-sm text-slate-700 ${detailsBorderClass}`}>
               <summary className="cursor-pointer select-none font-semibold text-slate-800">
                 Developer details
               </summary>
@@ -67,6 +73,38 @@ export function FlowDiagram({ steps, accent }: FlowDiagramProps) {
                     ))}
                   </ul>
                 </section>
+                {step.details.codeExamples && step.details.codeExamples.length > 0 ? (
+                  <section>
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Critical code examples
+                    </h3>
+                    <div className="mt-2 grid gap-3">
+                      {step.details.codeExamples.map((example) => (
+                        <article
+                          key={`${example.title}-${example.code}`}
+                          className="overflow-hidden rounded-md border border-slate-300 bg-slate-900"
+                        >
+                          <div className="flex items-center justify-between border-b border-slate-700 px-2.5 py-1.5">
+                            <span className="text-xs font-medium text-slate-200">
+                              {example.title}
+                            </span>
+                            <span className="rounded bg-slate-800 px-2 py-0.5 text-[10px] uppercase tracking-wide text-slate-300">
+                              {example.language}
+                            </span>
+                          </div>
+                          <pre className="whitespace-pre-wrap break-words px-2.5 py-2 text-[11px] leading-relaxed text-slate-100">
+                            <code>{example.code}</code>
+                          </pre>
+                          {example.explanation ? (
+                            <p className="border-t border-slate-700 px-2.5 py-1.5 text-xs text-slate-300">
+                              {example.explanation}
+                            </p>
+                          ) : null}
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
               </div>
             </details>
           ) : null}

@@ -64,6 +64,22 @@ export function CheckoutPage() {
                   "src/app/api/checkout/route.ts",
                   "parseCreateCheckoutSessionRequest()",
                 ],
+                codeExamples: [
+                  {
+                    title: "Checkout API request payload",
+                    language: "ts",
+                    code: "const result = await createCheckoutSession({\n  mode,\n  productName,\n  amountCents,\n  quantity,\n}).unwrap();",
+                    explanation:
+                      "Frontend sends normalized checkout payload and receives redirect URL.",
+                  },
+                  {
+                    title: "Server request parsing",
+                    language: "ts",
+                    code: "const payload = (await request.json()) as unknown;\nconst params = parseCreateCheckoutSessionRequest(payload);\nconst url = await createCheckoutSession(params);\nreturn NextResponse.json({ url });",
+                    explanation:
+                      "The route layer validates and forwards only trusted data to Stripe service.",
+                  },
+                ],
               },
             },
             {
@@ -80,6 +96,15 @@ export function CheckoutPage() {
                   "src/features/checkout-redirect/api/checkoutService.ts",
                   "createCheckoutSession()",
                   "requireAppUrl()",
+                ],
+                codeExamples: [
+                  {
+                    title: "Create hosted Checkout Session",
+                    language: "ts",
+                    code: "const session = await stripe.checkout.sessions.create({\n  mode: params.mode,\n  line_items: [{\n    price_data: {\n      currency: \"usd\",\n      product_data: { name: params.productName },\n      unit_amount: normalizedAmountCents,\n    },\n    quantity: normalizedQuantity,\n  }],\n  success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,\n  cancel_url: `${baseUrl}/checkout`,\n});",
+                    explanation:
+                      "Server owns session configuration, including return URLs and Stripe pricing data.",
+                  },
                 ],
               },
             },
@@ -155,6 +180,15 @@ export function CheckoutPage() {
                   "src/widgets/success-page/ui/SuccessPage.tsx",
                   "src/features/checkout-redirect/api/checkoutSessionService.ts",
                   "retrieveCheckoutSessionDisplay()",
+                ],
+                codeExamples: [
+                  {
+                    title: "Verify session on success page",
+                    language: "ts",
+                    code: "const sessionId = resolved.session_id;\nconst display = await retrieveCheckoutSessionDisplay(sessionId);",
+                    explanation:
+                      "The success page resolves Stripe session server-side before rendering result UI.",
+                  },
                 ],
               },
             },

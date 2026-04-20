@@ -54,6 +54,22 @@ export function ElementsPage() {
                   "src/app/api/payment-intent/route.ts",
                   "parseCreatePaymentIntentRequest()",
                 ],
+                codeExamples: [
+                  {
+                    title: "Client mutation request",
+                    language: "ts",
+                    code: "const result = await createPaymentIntent({\n  mode,\n  productName,\n  amountCents,\n  quantity,\n}).unwrap();",
+                    explanation:
+                      "The frontend sends explicit order parameters and waits for clientSecret.",
+                  },
+                  {
+                    title: "API route validation handoff",
+                    language: "ts",
+                    code: "const payload = (await request.json()) as unknown;\nconst params = parseCreatePaymentIntentRequest(payload);\nconst clientSecret = await createPaymentIntent(params);\nreturn NextResponse.json({ clientSecret });",
+                    explanation:
+                      "Request payload is validated before the Stripe service layer is invoked.",
+                  },
+                ],
               },
             },
             {
@@ -70,6 +86,22 @@ export function ElementsPage() {
                   "src/features/stripe-elements-form/api/paymentIntentService.ts",
                   "createOneTimePaymentIntent()",
                   "createSubscriptionPaymentIntent()",
+                ],
+                codeExamples: [
+                  {
+                    title: "One-time mode (PaymentIntent)",
+                    language: "ts",
+                    code: "const paymentIntent = await stripe.paymentIntents.create({\n  amount: totalAmountCents,\n  currency: \"usd\",\n  automatic_payment_methods: { enabled: true },\n});",
+                    explanation:
+                      "One-time flow uses a direct PaymentIntent with automatic payment methods.",
+                  },
+                  {
+                    title: "Subscription mode (invoice secret)",
+                    language: "ts",
+                    code: "const subscription = await stripe.subscriptions.create({\n  customer: customer.id,\n  payment_behavior: \"default_incomplete\",\n  items: [{ price: price.id, quantity: normalizedQuantity }],\n  expand: [\"latest_invoice.confirmation_secret\"],\n});\nconst clientSecret = subscription.latest_invoice?.confirmation_secret?.client_secret;",
+                    explanation:
+                      "Subscription flow takes client secret from invoice confirmation_secret.",
+                  },
                 ],
               },
             },
@@ -117,6 +149,15 @@ export function ElementsPage() {
                 keyItems: [
                   "stripe.confirmPayment()",
                   "handleSubmit()",
+                ],
+                codeExamples: [
+                  {
+                    title: "Confirm payment on client",
+                    language: "ts",
+                    code: "const confirmResult = await stripe.confirmPayment({\n  elements,\n  confirmParams: {\n    return_url: `${appUrl}/elements`,\n  },\n  redirect: \"if_required\",\n});",
+                    explanation:
+                      "Stripe.js performs confirmation in browser and handles redirect-required flows.",
+                  },
                 ],
               },
             },
