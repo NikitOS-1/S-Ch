@@ -21,6 +21,7 @@ import { ElementsProvider } from "./ElementsProvider";
 import { ElementsSuccessReceipt } from "./ElementsSuccessReceipt";
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
+const appUrl = process.env.NEXT_PUBLIC_URL ?? "";
 const stripePromise = getStripeBrowser(publishableKey);
 
 function paymentIntentStatusMessage(status: string): string {
@@ -67,7 +68,7 @@ function StripePaymentFields() {
         const confirmResult = await stripe.confirmPayment({
           elements,
           confirmParams: {
-            return_url: baseUrl || "http://localhost:3000/elements",
+            return_url: baseUrl || `${appUrl}/elements`,
           },
           redirect: "if_required",
         });
