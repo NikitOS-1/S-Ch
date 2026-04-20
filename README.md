@@ -7,6 +7,7 @@ Educational app that demonstrates **three ways** to accept card payments with [S
 | `/payment-link` | [Payment Links](https://stripe.com/docs/payments/payment-links) | Opens a hosted Stripe page; no Checkout Session API in this demo |
 | `/checkout` | [Stripe Checkout](https://stripe.com/docs/payments/checkout) (redirect) | Server creates a Checkout Session; user returns to `/success` |
 | `/elements` | [Payment Element](https://stripe.com/docs/payments/payment-element) (embedded) | Server creates a PaymentIntent; card form stays on your site |
+| `/test-cards` | [Stripe testing docs](https://docs.stripe.com/testing?testing-method=card-numbers) | Curated test card reference page with common success/decline/auth scenarios |
 
 **Stack:** Next.js 15 (App Router), TypeScript, Redux Toolkit + RTK Query, Tailwind CSS, Stripe.js / `@stripe/react-stripe-js`, `stripe` (server).
 
@@ -96,7 +97,11 @@ Path alias: `@/*` → `src/*` (see `tsconfig.json`).
 
 ## Test cards
 
-The sticky banner includes a **Test cards** menu with common [Stripe test numbers](https://stripe.com/docs/testing). Typical success card: `4242 4242 4242 4242`, any future expiry, any CVC.
+The sticky banner includes a **Test cards** menu with common [Stripe test numbers](https://docs.stripe.com/testing?testing-method=card-numbers).
+
+Use `/test-cards` for a full in-app reference page that groups popular numbers by scenario (success, declines, authentication).
+
+Typical success card: `4242 4242 4242 4242`, any future expiry, any CVC.
 
 ---
 

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { TEST_CARD_PRESETS, type TestCardAccent } from "@/shared/constants/test-cards";
+import { STRIPE_DOCS_URL } from "@/shared/constants/stripe-test-cards";
 
 const accentClasses: Record<TestCardAccent, string> = {
   success: "border-l-emerald-500 bg-slate-800/80",
@@ -121,7 +122,15 @@ export function InfoBanner() {
           <span aria-hidden>🧪</span> Sandbox Mode — Exp: any future date · CVC: any (Amex: any 4
           digits)
         </p>
-        <div className="relative flex shrink-0 justify-center" ref={wrapRef}>
+        <div className="flex shrink-0 flex-wrap items-center justify-center gap-2" ref={wrapRef}>
+          <a
+            href={STRIPE_DOCS_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center rounded-lg border border-blue-300 bg-white px-3 py-1.5 text-xs font-semibold text-blue-900 shadow-sm transition hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-sm"
+          >
+            Official docs
+          </a>
           <button
             type="button"
             className="inline-flex items-center gap-1.5 rounded-lg border border-blue-300 bg-white px-3 py-1.5 text-xs font-semibold text-blue-900 shadow-sm transition hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-sm"

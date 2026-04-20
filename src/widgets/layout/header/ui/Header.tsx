@@ -7,6 +7,7 @@ const navItems = [
   { href: "/payment-link", label: "Payment Link" },
   { href: "/checkout", label: "Checkout" },
   { href: "/elements", label: "Elements" },
+  { href: "/test-cards", label: "Test Cards" },
 ] as const;
 
 export function Header() {

@@ -141,13 +141,15 @@ function StripePaymentFields({
         <PaymentElement />
       </div>
       <div className="flex flex-wrap gap-3">
-        <button
-          type="submit"
-          disabled={!stripe || !elements || isSubmitting}
-          className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:w-auto"
-        >
-          {isSubmitting ? "Processing…" : `Pay ${totalDisplay}`}
-        </button>
+        {elementsOutcome !== "succeeded" ? (
+          <button
+            type="submit"
+            disabled={!stripe || !elements || isSubmitting}
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:w-auto"
+          >
+            {isSubmitting ? "Processing…" : `Pay ${totalDisplay}`}
+          </button>
+        ) : null}
         <button
           type="button"
           disabled={isSubmitting || isRefreshing}

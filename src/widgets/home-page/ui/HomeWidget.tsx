@@ -22,6 +22,13 @@ const demos = [
     badge: "Advanced",
     badgeClass: "bg-violet-100 text-violet-900 ring-violet-200",
   },
+  {
+    href: "/test-cards",
+    title: "Test Cards",
+    description: "Reference page with common Stripe test card numbers and expected outcomes.",
+    badge: "Reference",
+    badgeClass: "bg-sky-100 text-sky-900 ring-sky-200",
+  },
 ] as const;
 
 export function HomeWidget() {
@@ -40,7 +47,7 @@ export function HomeWidget() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         {demos.map((demo) => (
           <Link
             key={demo.href}
